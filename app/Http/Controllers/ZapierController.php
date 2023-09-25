@@ -10,10 +10,8 @@ class ZapierController extends Controller
     {
         try {
             $zap_array = $request->all();
-
             // stuff it into a query
             $zap_array = http_build_query($zap_array);
-
             // get my zap URL
             $ZAPIER_HOOK_URL = "https://hooks.zapier.com/hooks/catch/16472073/3rlfays/";
 
@@ -25,10 +23,14 @@ class ZapierController extends Controller
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
             $response = curl_exec($ch);
-            return response()->json(['success'=>true, 'message'=>"Request Successfull"]);
+            $err = curl_error($ch);
+            return response()->json(['success'=>"true", 'message'=>"Request Successfull"]);
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            // return response()->json($th->getMessage());
+            return response()->json($err);
         }
     }
 
